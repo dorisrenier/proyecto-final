@@ -1,7 +1,7 @@
 # PDF Analyzer - Plataforma de Análisis Documental Avanzado
 
 ## 📌 Información del Proyecto
-**Autora:** Doris Renier Cardero Cedeño  
+**Autor:** Doris Renier Cardero Cedeño  
 **Fecha de Publicación:** 22 de junio de 2025  
 
 ## 🔍 Resumen Ejecutivo
