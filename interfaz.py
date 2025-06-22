@@ -3,7 +3,7 @@ from pdf_summary import PDFAnalyzer
 import tempfile
 import os
 
-st.title("Análisis de documentos PDF")
+st.title("PDF")
 
 analyzer = PDFAnalyzer()
 
