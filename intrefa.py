@@ -36,7 +36,7 @@ if uploaded_files:
 
         # Mostrar resultados
         for i, res in enumerate(results):
-            with st.expander(f"📑 {res['archivo']}", expanded=True):
+            with st.expander(f" {res['archivo']}", expanded=True):
                 
                 # Información básica en columnas
                 col1, col2, col3 = st.columns(3)
