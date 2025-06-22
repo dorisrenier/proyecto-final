@@ -62,7 +62,7 @@ class PDFAnalyzer:
         if not sentences:
             return "Documento sin contenido textual significativo"
         summary = '. '.join(sentences[:max_sentences])
-        return summary[:297] + "..." if len(summary) > 300 else summary
+        return summary[:500] + "..." if len(summary) > 500 else summary
 
     def get_document_stats(self, pdf_path: str) -> Dict[str, any]:
         stats = {'num_paginas': 0, 'tamaño_archivo': 0, 'num_palabras': 0, 'num_caracteres': 0}
