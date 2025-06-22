@@ -10,7 +10,17 @@ class PDFAnalyzer:
     def __init__(self):
         self.supported_formats = ['.pdf']
         
+        
     def extract_metadata(self, pdf_path: str) -> Dict[str, str]:
+        """
+        descripcion: mediante el metodo extract_metadata se extrae los metadatos del pdf.
+        usando PyMuPDF y PyPDF2combinando potencia y estabilidad para mejor captura de los metadatos. 
+        
+        argumentos: ruta del pdf
+        
+        return: un diccionario con los metadatos del pdf
+        """
+        
         metadata = {
             'autor': 'No disponible',
             'fecha_creacion': 'No disponible',
@@ -39,6 +49,15 @@ class PDFAnalyzer:
         return metadata
 
     def extract_text(self, pdf_path: str) -> str:
+        """
+        descripcion: extra texto de forma eficiente, continuando el procesamiento incluso con pdf corruptos,
+        y evita que excepciones detengan todo el flujo. sin embargo no procesa imagenes, solo texto.
+         
+        argumentos: ruta del archivo pdf
+        
+        return: texto extraido en un string 
+        """
+
         text = ""
         try:
             doc = fitz.open(pdf_path)
@@ -56,7 +75,16 @@ class PDFAnalyzer:
         return text
 
     def extract_introduction_section(self, text: str) -> str:
-        """Extrae la sección de introducción, abstract o resumen del documento"""
+        
+        """
+        descripcion: extrae una seccion introductoria que brinde informacion sobre el pdf. 
+        sin embargo si esta seccion no es encontrada, se extrae texto del inicio del documento.
+        
+        argumentos: el string debuelto por extract_text
+        
+        return: la seccion introductoria o texto del inicio del documento en un string         
+        """
+        
         if not text.strip():
             return "No se pudo extraer texto del documento"
         
@@ -72,7 +100,8 @@ class PDFAnalyzer:
             match = re.search(pattern, text, re.DOTALL | re.MULTILINE)
             if match:
                 intro_text = match.group(1).strip()
-                if len(intro_text) > 100:  # Asegurar que sea una sección sustancial
+                # Asegurar que sea una sección sustancial.
+                if len(intro_text) > 100:  
                     # Limpiar y formatear el texto
                     intro_text = self._clean_text(intro_text)
                     # Limitar a 1000 caracteres
@@ -99,16 +128,34 @@ class PDFAnalyzer:
         
         # Palabras comunes en español e inglés que se deben filtrar
         stop_words = {
-            'de', 'la', 'que', 'el', 'en', 'y', 'a', 'con', 'del', 'se', 'las', 'por', 'un', 'para', 
-            'es', 'al', 'lo', 'como', 'más', 'pero', 'sus', 'le', 'ya', 'o', 'este', 'sí', 'porque',
-            'esta', 'entre', 'cuando', 'muy', 'sin', 'sobre', 'también', 'me', 'hasta', 'hay', 'donde',
-            'quien', 'desde', 'todo', 'nos', 'durante', 'todos', 'uno', 'les', 'ni', 'contra', 'otros',
-            'ese', 'eso', 'ante', 'ellos', 'e', 'esto', 'mí', 'antes', 'algunos', 'qué', 'unos', 'yo',
-            'otro', 'otras', 'otra', 'él', 'tanto', 'esa', 'estos', 'mucho', 'quienes', 'nada', 'muchos',
-            'cual', 'poco', 'ella', 'estar', 'estas', 'algunas', 'algo', 'nosotros', 'mi', 'mis', 'tú',
-            'te', 'ti', 'tu', 'tus', 'ellas', 'nosotras', 'vosotros', 'vosotras', 'os', 'mío', 'mía',
-            'míos', 'mías', 'tuyo', 'tuya', 'tuyos', 'tuyas', 'suyo', 'suya', 'suyos', 'suyas', 'nuestro',
-            'nuestra', 'nuestros', 'nuestras', 'vuestro', 'vuestra', 'vuestros', 'vuestras', 'esos', 'esas',
+           "el", "la", "los", "las", "un", "una", "unos", "unas",
+            "a", "ante", "bajo", "cabe", "con", "contra", "de", "desde", 
+            "durante", "en", "entre", "hacia", "hasta", "mediante", "para", 
+            "por", "según", "sin", "so", "sobre", "tras",
+            "y", "e", "ni", "que", "o", "u", "pero", "aunque", "mas", 
+            "sin embargo", "porque", "pues", "si", "como", "cuando",
+            "yo", "me", "mí", "entonces", "conmigo", "tú", "te", "ti", "contigo", 
+            "usted", "vos", "él", "le", "lo", "se", "sí", "consigo", 
+            "ella", "la", "nosotros", "nos", "nosotras", "vosotros", 
+            "vosotras", "os", "ustedes", "ellos", "ellas", "les", "los", 
+            "las", "se", "sí", "consigo", "muy", "mucho", "poco", "bastante",
+            "demasiado", "más", "menos", "algo", "casi", "solo", "solamente", 
+            "antes", "después", "luego", "ayer", "hoy", "mañana",  "también",
+            "siempre", "nunca", "jamás", "pronto", "tarde", "aquí",  "ahora",
+            "allí", "allá", "cerca", "lejos", "dentro", "fuera", 
+            "adelante", "atrás", "bien", "mal", "mejor", "peor", 
+            "así", "como", "tal", "cómo", "cuándo", "dónde",
+            "ser", "estar", "haber", "tener", "hacer", "poder", "decir", 
+            "ir", "ver", "dar", "saber", "querer", "llegar", "dejar", 
+            "llevar", "encontrar", "seguir", "poner", "parecer", 
+            "hablar", "pensar", "volver", "conocer", "salir", "venir", 
+            "tomar", "tratar", "mirar", "esperar", "buscar", "existir",
+            "este", "esta", "estos", "estas", "ese", "esa", "esos", "esas", 
+            "aquel", "aquella", "aquellos", "aquellas", "algo", "alguien",
+            "etc", "etcétera", "tal", "cual", "cuales", "varios", "cada", 
+            "cualquier", "todo", "todos", "ningún", "ninguno", "otro", 
+            "otros", "mismo", "tan", "sino", "ambos", "cuyo", "cuya",
+            "cuyos", "cuyas", "sea", "sean", "del", "al", "su", "sus",
             'the', 'be', 'to', 'of', 'and', 'a', 'in', 'that', 'have', 'i', 'it', 'for', 'not', 'on',
             'with', 'he', 'as', 'you', 'do', 'at', 'this', 'but', 'his', 'by', 'from', 'they', 'we',
             'say', 'her', 'she', 'or', 'an', 'will', 'my', 'one', 'all', 'would', 'there', 'their',
