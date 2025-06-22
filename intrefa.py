@@ -3,17 +3,21 @@ from pdf_summary_pro import PDFAnalyzer
 import tempfile
 import os
 
-st.title("Analizador de PDFs Avanzado")
-st.markdown("Carga uno o más archivos PDF para obtener un análisis completo incluyendo metadatos, introducción y palabras clave.")
+st.title("PDF's info")
+st.markdown("Carga archivos PDF para obtener un análisis completo...")
 
 analyzer = PDFAnalyzer()
 
-uploaded_files = st.file_uploader(
-    "Carga uno o más archivos PDF", 
+#cargar pdfs
+
+uploaded_files = st.file_uploader( 
+    "carga archivos pdf", 
     type="pdf", 
     accept_multiple_files=True,
     help="Selecciona archivos PDF para analizar su contenido, metadatos y extraer palabras clave"
 )
+
+
 
 if uploaded_files:
     with st.spinner('Analizando archivos PDF...'):
@@ -55,8 +59,8 @@ if uploaded_files:
                 
                 st.markdown("---")
                 
-                # Sección de Introducción/Abstract (NUEVA FUNCIONALIDAD)
-                st.subheader("Introducción/Abstract")
+                # Sección de Abstract
+                st.subheader("Abstract")
                 if res['introduccion'] and res['introduccion'] != "No se pudo identificar una sección introductoria":
                     st.markdown(f"<div style='background-color: #f0f2f6; padding: 15px; border-radius: 10px; border-left: 4px solid #4CAF50;'>{res['introduccion']}</div>", unsafe_allow_html=True)
                 else:
@@ -64,10 +68,10 @@ if uploaded_files:
                 
                 st.markdown("---")
                 
-                # Palabras Clave (NUEVA FUNCIONALIDAD)
+                # Palabras Clave
                 st.subheader("Palabras Clave")
                 if res['palabras_clave']:
-                    # Mostrar palabras clave como badges
+                    # Mostrar palabras clave
                     keywords_html = ""
                     for keyword in res['palabras_clave']:
                         keywords_html += f"<span style='background-color: #e1f5fe; color: #01579b; padding: 4px 8px; margin: 2px; border-radius: 12px; display: inline-block; font-size: 0.9em;'>{keyword}</span> "
@@ -78,7 +82,7 @@ if uploaded_files:
                 st.markdown("---")
                 
                 # Resumen tradicional
-                st.subheader("Resumen Automático")
+                st.subheader("Del archivo ...")
                 st.markdown(f"<div style='background-color: #fff3e0; padding: 15px; border-radius: 10px; border-left: 4px solid #ff9800;'>{res['resumen']}</div>", unsafe_allow_html=True)
                 
                 # Separador entre documentos
@@ -94,5 +98,5 @@ if uploaded_files:
 
 else:
     # Instrucciones cuando no hay archivos cargados
-    st.info("Selecciona uno o más archivos PDF para comenzar el análisis.")
+    st.info("Selecciona archivos PDF para comenzar el análisis.")
     
